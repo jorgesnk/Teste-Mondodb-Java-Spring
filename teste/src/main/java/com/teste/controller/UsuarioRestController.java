@@ -1,4 +1,6 @@
 package com.teste.controller;
+
+import java.net.UnknownHostException;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -56,11 +58,10 @@ public class UsuarioRestController {
 		}
 
 	}
-	
-	
+
 	@Transactional
 	@RequestMapping(value = "/atualizar", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public void atualizar( @RequestBody String strnome) {
+	public void atualizar(@RequestBody String strnome) {
 
 		try {
 			System.out.println("passou -1");
@@ -70,14 +71,14 @@ public class UsuarioRestController {
 			System.out.println("passou JO");
 			Update up = new Update();
 			usuario.setNome(job.getString("novo"));
-	
+
 			up.set("nome", usuario.getNome());
 			System.out.println("passou 1");
 			usuario.setNome(job.getString("nome"));
 			Query query = new Query(Criteria.where("nome").is(usuario.getNome()));
 			System.out.println("passou 2");
 			con.mongoOperations().updateFirst(query, up, Usuario.class);
-	
+
 			System.out.println("passou 3");
 
 		} catch (Exception e) {
@@ -85,5 +86,19 @@ public class UsuarioRestController {
 		}
 
 	}
-
+	
+	
+	@Transactional
+	@RequestMapping(value="/deletar/{nome}",method=RequestMethod.DELETE)
+	public void deletar(@PathVariable String nome){
+		Query query =new Query(Criteria.where("nome").is(nome));getClass();
+		try {
+			con.mongoOperations().remove(query, Usuario.class);
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
 }
